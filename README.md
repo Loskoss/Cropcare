@@ -43,6 +43,7 @@ CropCare is a web application designed to provide farmers with essential weather
 2. **User Accounts**: Enable user registration to save farm locations and preferences.
 3. **Email Alerts**: Provide email notifications for weather forecast changes and irrigation recommendations.
 4. **Historical Data Analysis**: Analyze historical weather data to offer long-term farming insights and trends.
+5. **Crop Suggestion** : suggest crop based on historical data.
 
 ## Contributing
 
