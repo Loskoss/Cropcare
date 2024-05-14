@@ -1,0 +1,25 @@
+{
+  "name": "cropcare",
+  "version": "1.0.0",
+  "description": "weather data for crop rotation",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "author": "Karan Yadav",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.2",
+    "express": "^4.19.2",
+    "open": "^7.0.3",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.0"
+  }
+}

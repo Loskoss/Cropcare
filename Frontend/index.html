@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropCare</title>
+    <!-- Link Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Link Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="mb-4">CropCare - Helper</h1>
+    
+    <!-- Farm Details Form -->
+    <form id="farmDetailsForm">
+        <div class="form-group">
+            <label for="latitude">Latitude</label>
+            <input type="text" class="form-control" id="latitude" placeholder="Enter latitude">
+        </div>
+        <div class="form-group">
+            <label for="longitude">Longitude</label>
+            <input type="text" class="form-control" id="longitude" placeholder="Enter longitude">
+        </div>
+        <div class="form-group">
+            <label for="cropType">Crop Type</label>
+            <select class="form-control" id="cropType">
+                <option value="Wheat">Wheat</option>
+                <option value="Rice">Rice</option>
+                <option value="Corn">Corn</option>
+                <option value="Soybean">Soybean</option>
+                <option value="Barley">Barley</option>
+                <option value="Cotton">Cotton</option>
+                <option value="Sugarcane">Sugarcane</option>
+                <option value="Potato">Potato</option>
+                <option value="Tomato">Tomato</option>
+                <option value="Apple">Apple</option>
+            </select>
+        </div>
+        <button id="getLocationBtn" type="button" class="btn btn-primary">Get Location</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <!-- City Name Display -->
+    <h2 id="cityName" class="mt-4"></h2>
+
+    <!-- Irrigation Pattern Display -->
+    <div id="irrigationPattern" class="mt-4"></div>
+
+    <!-- Error Container -->
+    <div id="errorContainer" class="mt-4"></div>
+
+    <!-- Visualization Container -->
+    <div id="visualizationContainer" class="mt-4">
+        <canvas id="weatherChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Forecast Table Container -->
+    <div id="oneDayTableContainer" class="table-responsive mt-4"></div>
+</div>
+
+<!-- Include Axios library -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- Include custom JavaScript -->
+<script src="script.js"></script>
+
+
+</body>
+</html>
