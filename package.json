@@ -14,7 +14,8 @@
     "chart.js": "^4.4.2",
     "express": "^4.19.2",
     "open": "^7.0.3",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "watch": "^1.0.2"
   },
   "devDependencies": {
     "body-parser": "^1.20.2",
