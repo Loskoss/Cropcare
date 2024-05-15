@@ -30,7 +30,7 @@ app.get('/weather', async (req, res) => {
 // Start the server and open the browser
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-    open('/media/gamedisk/Code/Basic-Fun/GHW-Data/Final-proj/Frontend/index.html').then(() => {
+    open('Frontend/index.html').then(() => {
         console.log('Default browser opened');
     }).catch(err => {
         console.error('Error opening browser:', err);
