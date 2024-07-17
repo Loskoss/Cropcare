@@ -26,3 +26,4 @@ node_modules/watch/test/test_monitorRootDirectory.js
 node_modules/watch/test/test_watchTree.js
 node_modules/watch/test/d/t
 node_modules/watch/test/d/d/t
+.env

@@ -2,7 +2,7 @@
 function clearPage() {
     document.getElementById('cityName').textContent = '';
     document.getElementById('errorContainer').innerHTML = '';
-    document.getElementById('irrigationPattern').textContent = ' ';
+    document.getElementById('irrigationPattern').textContent = '';
     document.getElementById('oneDayTableContainer').innerHTML = '';
 }
 
@@ -18,14 +18,12 @@ function submitForm(event) {
     // Get form values
     const latitude = document.getElementById('latitude').value;
     const longitude = document.getElementById('longitude').value;
-    const cropType = document.getElementById('cropType').value;
 
     // Send form data to the server
     axios.get('http://localhost:3000/weather', {
         params: {
             latitude: latitude,
-            longitude: longitude,
-            cropType: cropType
+            longitude: longitude
         }
     })
     .then(response => {
@@ -90,19 +88,8 @@ function createWeatherTable(weatherData) {
             <th>Time</th>
             <th>Temperature (°C)</th>
             <th>Humidity (%)</th>
-            <th>Precipitation Probability (%)</th>
-            <th>Evapotranspiration</th>
-            <th>Wind Speed (m/s)</th>
-            <th>Wind Direction (°)</th>
-            <th>Soil Temperature (0 cm)</th>
-            <th>Soil Temperature (6 cm)</th>
-            <th>Soil Temperature (18 cm)</th>
-            <th>Soil Temperature (54 cm)</th>
-            <th>Soil Moisture (0-1 cm)</th>
-            <th>Soil Moisture (1-3 cm)</th>
-            <th>Soil Moisture (3-9 cm)</th>
-            <th>Soil Moisture (9-27 cm)</th>
-            <th>Soil Moisture (27-81 cm)</th>
+            <th>Precipitation (mm)</th>
+            <th>Evapotranspiration (mm)</th>
         </tr>
     `;
     table.appendChild(tableHeader);
@@ -115,19 +102,8 @@ function createWeatherTable(weatherData) {
             <td>${formatDateTime(time)}</td>
             <td>${weatherData.hourly.temperature_2m[index]}</td>
             <td>${weatherData.hourly.relative_humidity_2m[index]}</td>
-            <td>${weatherData.hourly.precipitation_probability[index]}</td>
+            <td>${weatherData.hourly.rain[index]}</td>
             <td>${weatherData.hourly.evapotranspiration[index]}</td>
-            <td>${weatherData.hourly.wind_speed_10m[index]}</td>
-            <td>${weatherData.hourly.wind_direction_10m[index]}</td>
-            <td>${weatherData.hourly.soil_temperature_0cm[index]}</td>
-            <td>${weatherData.hourly.soil_temperature_6cm[index]}</td>
-            <td>${weatherData.hourly.soil_temperature_18cm[index]}</td>
-            <td>${weatherData.hourly.soil_temperature_54cm[index]}</td>
-            <td>${weatherData.hourly.soil_moisture_0_to_1cm[index]}</td>
-            <td>${weatherData.hourly.soil_moisture_1_to_3cm[index]}</td>
-            <td>${weatherData.hourly.soil_moisture_3_to_9cm[index]}</td>
-            <td>${weatherData.hourly.soil_moisture_9_to_27cm[index]}</td>
-            <td>${weatherData.hourly.soil_moisture_27_to_81cm[index]}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -155,126 +131,120 @@ function displayError(message) {
 // Function to analyze weather forecast data and suggest irrigation pattern
 function analyzeForecast(weatherData) {
     // Get relevant weather data
-    const precipitation = weatherData.hourly.precipitation_probability; 
+    const precipitation = weatherData.hourly.rain; 
     const temperature = weatherData.hourly.temperature_2m; 
     const humidity = weatherData.hourly.relative_humidity_2m; 
-    const soilMoisture = weatherData.hourly.soil_moisture_0_to_1cm; 
 
     // Define irrigation patterns and their conditions
     const irrigationPatterns = [
         { pattern: "Biweekly irrigation (every 3 days)", 
           condition: () => precipitation.every(value => value < 20) &&
                          temperature.every(value => value > 25) &&
-                         humidity.every(value => value < 70) &&
-                         soilMoisture.every(value => value < 50) 
+                         humidity.every(value => value < 70)
         },
         { pattern: "Weekly irrigation (every 7 days)", 
           condition: () => precipitation.every(value => value < 30) &&
                          temperature.every(value => value > 20) &&
-                         humidity.every(value => value < 60) &&
-                         soilMoisture.every(value => value < 60) 
+                         humidity.every(value => value < 60)
         },
         { pattern: "Twice a week irrigation (every 3-4 days)", 
-          condition: () => precipitation.every(value => value < 40) &&
-                         temperature.every(value => value > 18) &&
-                         humidity.every(value => value < 65) &&
-                         soilMoisture.every(value => value < 70) 
-        },
+          condition: () => precipitation.some(value => value >= 30) ||
+                         temperature.some(value => value < 20) ||
+                         humidity.some(value => value >= 70)
+        }
     ];
-    const suggestedPattern = irrigationPatterns.find(pattern => pattern.condition());
-    if (suggestedPattern) {
-        return suggestedPattern.pattern;
-    } else {
-        return "Standard irrigation pattern";
-    }
+
+    // Determine the most suitable irrigation pattern
+    const pattern = irrigationPatterns.find(p => p.condition());
+    return pattern ? pattern.pattern : "No suitable irrigation pattern found";
 }
 
 // Function to create weather chart
 function createWeatherChart(weatherData) {
-    const existingChart = Chart.getChart('weatherChart');
-    if (existingChart) {
-        existingChart.destroy();
-    }
     const ctx = document.getElementById('weatherChart').getContext('2d');
-    const timeLabels = weatherData.hourly.time.map(time => formatDateTime(time));
-    const temperatureData = weatherData.hourly.temperature_2m;
-    const humidityData = weatherData.hourly.relative_humidity_2m;
-    const precipitationData = weatherData.hourly.precipitation_probability;
 
-    const weatherChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: timeLabels,
-            datasets: [{
+    const chartData = {
+        labels: weatherData.hourly.time,
+        datasets: [
+            {
                 label: 'Temperature (°C)',
+                data: weatherData.hourly.temperature_2m,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 yAxisID: 'temperature',
-                borderColor: 'rgb(255, 99, 132)',
-                data: temperatureData
-            }, {
+            },
+            {
                 label: 'Humidity (%)',
+                data: weatherData.hourly.relative_humidity_2m,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 yAxisID: 'humidity',
-                borderColor: 'rgb(54, 162, 235)',
-                data: humidityData
-            }, {
-                label: 'Precipitation Probability (%)',
+            },
+            {
+                label: 'Precipitation (mm)',
+                data: weatherData.hourly.rain,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 yAxisID: 'precipitation',
-                borderColor: 'rgb(75, 192, 192)',
-                data: precipitationData
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    id: 'temperature',
-                    type: 'linear',
-                    position: 'left',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Temperature (°C)'
-                    }
-                }, {
-                    id: 'humidity',
-                    type: 'linear',
-                    position: 'right',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Humidity (%)'
-                    }
-                }, {
-                    id: 'precipitation',
-                    type: 'linear',
-                    position: 'right',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Precipitation Probability (%)'
-                    }
-                }]
+            }
+        ]
+    };
+
+    const chartOptions = {
+        scales: {
+            temperature: {
+                type: 'linear',
+                position: 'left',
+                ticks: {
+                    beginAtZero: true,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Temperature (°C)',
+                },
+            },
+            humidity: {
+                type: 'linear',
+                position: 'right',
+                ticks: {
+                    beginAtZero: true,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Humidity (%)',
+                },
+            },
+            precipitation: {
+                type: 'linear',
+                position: 'left',
+                ticks: {
+                    beginAtZero: true,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Precipitation (mm)',
+                },
             }
         }
+    };
+
+    new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
     });
 }
 
-// Function to get user's location
-function getLocation() {
+// Event listeners
+document.getElementById('farmDetailsForm').addEventListener('submit', submitForm);
+document.getElementById('getLocationBtn').addEventListener('click', function() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                document.getElementById('latitude').value = latitude;
-                document.getElementById('longitude').value = longitude;
-            },
-            error => {
-                console.error('Error getting location:', error);
-                displayError('Error getting location. Please try again or enter manually.');
-            }
-        );
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+            submitForm();
+        });
     } else {
-        console.error('Geolocation is not supported by this browser.');
         displayError('Geolocation is not supported by this browser.');
     }
-}
-
-// Add event listeners
-document.getElementById('getLocationBtn').addEventListener('click', getLocation);
-document.getElementById('farmDetailsForm').addEventListener('submit', submitForm);
+});

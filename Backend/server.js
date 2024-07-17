@@ -2,10 +2,9 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const open = require('open');
-const cors = require('cors'); 
+const cors = require('cors');
 require('dotenv').config(); // Load environment variables from .env file
-const port = process.env.PORT || 3000; 
-
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.static('public'));
@@ -13,8 +12,12 @@ app.use(express.static('public'));
 app.get('/weather', async (req, res) => {
     try {
         // Get latitude and longitude from query parameters
-        const latitude = req.query.latitude;
-        const longitude = req.query.longitude;
+        const { latitude, longitude } = req.query;
+
+        // Validate latitude and longitude
+        if (!latitude || !longitude) {
+            return res.status(400).json({ error: 'Latitude and longitude are required' });
+        }
 
         // Fetch weather data from Open-Meteo API
         const weatherData = await getWeatherData(latitude, longitude);
@@ -40,13 +43,12 @@ app.listen(port, () => {
 // Function to fetch weather data based on latitude and longitude
 async function getWeatherData(latitude, longitude) {
     try {
-        //const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&soil_temperature=0cm,6cm,18cm,54cm&soil_moisture=0-1cm,1-3cm,3-9cm,9-27cm,27-81cm`;
-        const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,evapotranspiration,wind_speed_10m,wind_direction_10m,soil_temperature_0cm,soil_temperature_6cm,soil_temperature_18cm,soil_temperature_54cm,soil_moisture_0_to_1cm,soil_moisture_1_to_3cm,soil_moisture_3_to_9cm,soil_moisture_9_to_27cm,soil_moisture_27_to_81cm`;
+        const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&hourly=temperature_2m,relative_humidity_2m,rain,evapotranspiration`;
 
         const response = await axios.get(apiUrl);
         return response.data;
     } catch (error) {
         console.error('Error fetching weather data:', error);
-        return null;
+        throw error;
     }
 }

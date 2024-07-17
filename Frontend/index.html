@@ -3,72 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CropCare</title>
-    <!-- Link Bootstrap CSS -->
+    <title>Weather and Crop Prediction</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Link Custom CSS -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<div class="container mt-5">
-    <h1 class="mb-4">CropCare - Helper</h1>
-    
-    <!-- Farm Details Form -->
-    <form id="farmDetailsForm">
-        <div class="form-group">
-            <label for="latitude">Latitude</label>
-            <input type="text" class="form-control" id="latitude" placeholder="Enter latitude">
+    <div class="container mt-5">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="weather-tab" data-toggle="tab" href="#weather" role="tab" aria-controls="weather" aria-selected="true">Weather</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="crop-tab" data-toggle="tab" href="#crop" role="tab" aria-controls="crop" aria-selected="false">Crop Prediction</a>
+            </li>
+        </ul>
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="weather" role="tabpanel" aria-labelledby="weather-tab">
+                <form id="farmDetailsForm">
+                    <div class="form-group">
+                        <label for="latitude">Latitude:</label>
+                        <input type="text" id="latitude" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitude">Longitude:</label>
+                        <input type="text" id="longitude" class="form-control" required>
+                    </div>
+                    <button type="button" id="getLocationBtn" class="btn btn-primary">Get My Location</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+                <div id="errorContainer" class="mt-3"></div>
+                <div id="cityName" class="mt-3"></div>
+                <div id="oneDayTableContainer" class="mt-3"></div>
+                <canvas id="weatherChart" class="mt-3"></canvas>
+                <div id="irrigationPattern" class="mt-3"></div>
+            </div>
+            <div class="tab-pane fade" id="crop" role="tabpanel" aria-labelledby="crop-tab">
+                <form id="cropPredictionForm">
+                    <div class="form-group">
+                        <label for="npk">NPK (comma-separated):</label>
+                        <input type="text" id="npk" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ph">pH:</label>
+                        <input type="text" id="ph" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Predict Crop</button>
+                </form>
+                <div id="cropPredictionResult" class="mt-3"></div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="longitude">Longitude</label>
-            <input type="text" class="form-control" id="longitude" placeholder="Enter longitude">
-        </div>
-        <div class="form-group">
-            <label for="cropType">Crop Type</label>
-            <select class="form-control" id="cropType">
-                <option value="Wheat">Wheat</option>
-                <option value="Rice">Rice</option>
-                <option value="Corn">Corn</option>
-                <option value="Soybean">Soybean</option>
-                <option value="Barley">Barley</option>
-                <option value="Cotton">Cotton</option>
-                <option value="Sugarcane">Sugarcane</option>
-                <option value="Potato">Potato</option>
-                <option value="Tomato">Tomato</option>
-                <option value="Apple">Apple</option>
-            </select>
-        </div>
-        <button id="getLocationBtn" type="button" class="btn btn-primary">Get Location</button>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-
-    <!-- City Name Display -->
-    <h2 id="cityName" class="mt-4"></h2>
-
-    <!-- Irrigation Pattern Display -->
-    <div id="irrigationPattern" class="mt-4"></div>
-
-    <!-- Error Container -->
-    <div id="errorContainer" class="mt-4"></div>
-
-    <!-- Visualization Container -->
-    <div id="visualizationContainer" class="mt-4">
-        <canvas id="weatherChart" width="400" height="200"></canvas>
     </div>
 
-    <!-- Forecast Table Container -->
-    <div id="oneDayTableContainer" class="table-responsive mt-4"></div>
-</div>
-
-<!-- Include Axios library -->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-<!-- Include custom JavaScript -->
-<script src="script.js"></script>
-
-
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
