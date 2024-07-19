@@ -6,6 +6,12 @@
     <title>Weather and Crop Prediction</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        #oneDayTableContainer {
+            max-height: 400px; /* Adjust this value as needed */
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -33,9 +39,10 @@
                 </form>
                 <div id="errorContainer" class="mt-3"></div>
                 <div id="cityName" class="mt-3"></div>
-                <div id="oneDayTableContainer" class="mt-3"></div>
                 <canvas id="weatherChart" class="mt-3"></canvas>
                 <div id="irrigationPattern" class="mt-3"></div>
+                <div id="oneDayTableContainer" class="mt-3"></div>
+
             </div>
             <div class="tab-pane fade" id="crop" role="tabpanel" aria-labelledby="crop-tab">
                 <form id="cropPredictionForm">

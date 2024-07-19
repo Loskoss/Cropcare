@@ -242,7 +242,7 @@ document.getElementById('getLocationBtn').addEventListener('click', function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             document.getElementById('latitude').value = position.coords.latitude;
             document.getElementById('longitude').value = position.coords.longitude;
-            submitForm();
+
         });
     } else {
         displayError('Geolocation is not supported by this browser.');
